@@ -16,13 +16,13 @@ function getHeaders(json) {
     return Object.keys(json[0]);
 }
 
-function getRows(json, hidden) {
+function getRows(json, ){//hidden) { //) {
     let rows = [];
     for (let i = 0; i < json.length; i++) {
         rows.push(
             {'key' : i,
             'values': Object.values(json[i]),
-            'hidden': hidden[i]
+            // 'hidden': hidden[i]
             });
     }
 
@@ -88,7 +88,7 @@ export default class SimpleTable extends Component {
 
 SimpleTable.defaultProps = {
     data: [],
-    hidden_data: [],
+  //  hidden_data: [],
     edit: false,
     delete: false,
     object_name: ''

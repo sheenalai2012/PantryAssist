@@ -79,7 +79,7 @@ export default class AllVolunteerView extends Component {
           height: '3px',
         }}
       />      
-            <SimpleTable object_name='volunteer' data={this.state.volunteer_data} edit={true} delete={true} hidden_data={TouchList.state.hidden_data}/>
+            <SimpleTable object_name='volunteer' data={this.state.volunteer_data} edit={true} delete={true} hidden_data={this.state.hidden_data}/>
             <div id='hey'>
                 <TimeTable />
             </div>
