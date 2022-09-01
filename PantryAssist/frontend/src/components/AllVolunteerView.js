@@ -19,6 +19,7 @@ export default class AllVolunteerView extends Component {
             volunteer_data:[],
             hidden_data:[]
         };
+        this.getVolunteers();
     }
 
     getVolunteers() {
@@ -67,8 +68,9 @@ export default class AllVolunteerView extends Component {
         })
         render()
     }
+    
     render() {
-        this.getVolunteers();
+        //this.getVolunteers();
         return (<div>
             <h1>This is the Volunteer View! kljdlfkjsdfldsjflsdfjsdflkjsdfkldsjfsdlfjsldflsd</h1>
             <hr

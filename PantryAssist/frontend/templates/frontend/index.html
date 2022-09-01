@@ -6,16 +6,112 @@
         {% load static %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"> </script>
         <script src="https://apis.google.com/js/api.js" type="text/javascript"></script>
+    
         <link rel="stylesheet" type="text/css" href='{% static "css/index.css" %}'/>
         <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
 
         
     </head>
     <body>
+        
+        
+        {% comment %} GOOGLE API SCRIPTS {% endcomment %}
+        <script>
+          let tokenClient;
+          let gapiInited;
+          let gisInited;
+          var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
+          var SCOPES = "https://www.googleapis.com/auth/calendar.events"
+
+
+          function checkBeforeStart() {
+             if (gapiInited && gisInited && document.getElementById("showEventsBtn") != undefined){
+                document.getElementById("showEventsBtn").style.visibility="visible";
+             }
+          }
+          function gapiInit() {
+            gapi.client.init({
+                apiKey: 'AIzaSyAWLGefhEUZ5IsITdufucdyFtM0ysPCJWg',
+                clientId: '889612418739-ik8gohl2ilqs2npf9kib62ulisbafll6.apps.googleusercontent.com',
+                discoveryDocs: DISCOVERY_DOCS,
+                scope: SCOPES,
+                plugin_name: "PantryAssist"
+            })
+            .then(function() {  // Load the Calendar API discovery document.
+                gapi.client.load('https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest');
+                gapiInited = true;
+                checkBeforeStart();
+            });
+          }
+      
+          function gapiLoad() {
+              gapi.load('client', gapiInit)
+          }
+      
+          function gisInit() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                      client_id: '889612418739-ik8gohl2ilqs2npf9kib62ulisbafll6.apps.googleusercontent.com',
+                      scope: 'https://www.googleapis.com/auth/calendar',
+                      callback: '',  // defined at request time
+                  });
+            gisInited = true;
+            checkBeforeStart();
+
+          }
+
+        function showEvents(events) {
+            tokenClient.callback = (resp) => {
+              if (resp.error !== undefined) {
+                throw(resp);
+              }
+              // GIS has automatically updated gapi.client with the newly issued access token.
+              console.log('gapi.client access token: ' + JSON.stringify(gapi.client.getToken()));
+
+              gapi.client.calendar.calendars.insert({
+                  summary: "Calendar Title", // required
+                  description: "My Calendar" // optional
+                }).then(calendarAPIResponse => {
+                    console.log(JSON.stringify(calendarAPIResponse));
+                    var calendarId = calendarAPIResponse.result.id;
+
+                    var firstEventLink = "";
+                    for (let i = 0; i < events.length; i++) {
+                        gapi.client.calendar.events.insert({
+                            'calendarId': calendarId,
+                                'resource': events[i]}
+                                )
+                        .then(calendarAPIResponse => {
+                            if (i == 0) {
+                                firstEventLink = calendarAPIResponse.result.htmlLink;
+                            }
+                        })
+                        .catch(err => console.log(err));
+                    }
+                    console.log(firstEventLink);
+                    window.open(firstEventLink);
+                })
+                .catch(err => console.log(err));
+
+        document.getElementById("showEventsBtn").innerText = "Refresh Calendar";
+        }
+      if (gapi.client.getToken() === null) {
+        // Prompt the user
+        tokenClient.requestAccessToken({prompt: 'consent'});
+        console.log("prompt");
+      } else {
+        // Skip display of account chooser and consent dialog for an existing session.
+        tokenClient.requestAccessToken({prompt: ''});
+      } 
+    }
+</script>
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoad()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gisInit()"></script>
+
         <div id='root'>
             <div id="app"></div>
-            <p>hello</p>
+            <p>heloo</p>
         </div>
+        
 
         <script src='{% static "frontend/main.js" %}'></script>
 

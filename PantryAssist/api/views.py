@@ -59,7 +59,17 @@ class VolunteerView(APIView):
 
     def get(self, request, id='', format=None):
         volunteer = Volunteer.objects.get(pk=id)
-        return Response(VolunteerSerializer(volunteer).data, status=status.HTTP_200_OK)
+        shifts = []
+        for shift in Shift.objects.filter(volunteer=id):
+            shifts.append(ShiftSerializer(shift).data)
+        response = {
+            "first_name": volunteer.first_name,
+            "last_name": volunteer.last_name,
+            "preferred_name": volunteer.preferred_name,
+            "email": volunteer.email,
+            "shifts": shifts
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
@@ -157,15 +167,9 @@ class SessionView(APIView):
 class ShiftView(APIView):
     serializer_class = ShiftSerializer
 
-    def get(self, request, volunteer_id = '', format=None):
-        if volunteer_id == '':
-            shifts = Shift.objects.all()
-        else:
-            shifts = Shift.objects.filter(volunteer=volunteer_id)
-        response = []
-        for shift in shifts:
-            response.append(ShiftSerializer(shift).data)
-        return Response(response, status=status.HTTP_200_OK)
+    def get(self, request, id = '', format=None):
+        shift = Shift.objects.get(pk=id)
+        return Response(ShiftSerializer(shift).data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         shift = Shift()

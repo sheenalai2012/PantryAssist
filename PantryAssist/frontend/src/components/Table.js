@@ -28,6 +28,13 @@ function getRows(json, ){//hidden) { //) {
 
     return rows;
 }
+
+// function objectView() {
+//     this.context.router.push({ //browserHistory.push should also work here
+//         pathname: "/volunteer",
+//         state: {id: 1}
+//     }); 
+// }
 /*
 Props: 
 rows (list of objects)
@@ -71,7 +78,7 @@ export default class SimpleTable extends Component {
                       </TableCell> */}
                       
                       {row.values.map((cell) => (
-                        <TableCell align="right"  component={Link} to='/'>{cell}</TableCell>
+                        <TableCell align="right"  component={Link} to='/volunteer1'>{cell}</TableCell>
                       ))}
                       
                       {this.props.edit && <TableCell component='div' align="right" ><Button>Edit</Button></TableCell>}

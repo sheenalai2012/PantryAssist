@@ -5,5 +5,6 @@ urlpatterns = [
     path('', index),
     path('cases', index),
     path('volunteers', index),
+    path('volunteer/<int:id>', index),
     path('test', index)
 ]
